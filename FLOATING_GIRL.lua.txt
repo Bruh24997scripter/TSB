@@ -1453,9 +1453,6 @@ p.Acceleration=Vector3.new(0,0,-.01)
 p.ZOffset = 0
 end)
 getgenv().Looping = false
-
-c.CameraSubject = vg
-c.CFrame = CFrame.new(vg.Position + Vector3.new(0, -100, 0), vg.Position)
 task.wait(.2)
 getgenv().Looping = true
 getgenv().Rainbow = 0
