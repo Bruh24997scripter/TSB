@@ -1,3 +1,13 @@
+-- ✅ Stability patch: wait for character and disable Shiftlock
+local lp = game:GetService("Players").LocalPlayer
+repeat task.wait() until lp.Character and lp.Character:FindFirstChild("HumanoidRootPart")
+
+pcall(function()
+    local gui = lp:FindFirstChild("PlayerGui")
+    if gui and gui:FindFirstChild("Shiftlock") then
+        gui.Shiftlock.Enabled = false
+    end
+end)
 
 function info(txt)
 local ScreenGui = Instance.new("ScreenGui")
@@ -3678,4 +3688,11 @@ task.spawn(function() task.wait(.5) MainEnv() end)
 task.wait(.7)
 SpawnA() 
 
+end)
+-- ✅ Re-enable Shiftlock when everything’s loaded
+pcall(function()
+    local gui = game.Players.LocalPlayer:FindFirstChild("PlayerGui")
+    if gui and gui:FindFirstChild("Shiftlock") then
+        gui.Shiftlock.Enabled = true
+    end
 end)
