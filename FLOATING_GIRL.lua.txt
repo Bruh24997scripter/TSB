@@ -1453,6 +1453,13 @@ p.Acceleration=Vector3.new(0,0,-.01)
 p.ZOffset = 0
 end)
 getgenv().Looping = false
+-- ✅ Camera lock for Ballistic Missile
+local c = workspace.CurrentCamera
+c.CameraType = Enum.CameraType.Scriptable
+
+-- make the camera focus on the vg part below you
+c.CameraSubject = vg
+c.CFrame = CFrame.new(vg.Position + Vector3.new(0, -100, 0), vg.Position)
 task.wait(.2)
 getgenv().Looping = true
 getgenv().Rainbow = 0
@@ -1469,6 +1476,12 @@ getgenv().Rainbow = 0 dir = 1
 end
 task.wait()
 end
+end)
+-- ✅ Restore camera control after Ballistic Missile
+pcall(function()
+    local c = workspace.CurrentCamera
+    c.CameraType = Enum.CameraType.Custom
+    c.CameraSubject = game.Players.LocalPlayer.Character
 end)
 
 spawn(function()
