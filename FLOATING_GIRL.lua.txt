@@ -1453,11 +1453,40 @@ p.Acceleration=Vector3.new(0,0,-.01)
 p.ZOffset = 0
 end)
 getgenv().Looping = false
--- ✅ Camera lock for Ballistic Missile
-local c = workspace.CurrentCamera
-c.CameraType = Enum.CameraType.Scriptable
+--- === Camera override start (Ballistic Missile) ===
+local RunService = game:GetService("RunService")
+local camera = workspace.CurrentCamera
 
--- make the camera focus on the vg part below you
+-- create a persistent cam anchor in workspace (not parented to character)
+local camAnchor = Instance.new("Part")
+camAnchor.Name = "Ballistic_CamAnchor"
+camAnchor.Size = Vector3.new(0.1,0.1,0.1)
+camAnchor.Anchored = true
+camAnchor.CanCollide = false
+camAnchor.Transparency = 1
+camAnchor.Parent = workspace
+
+-- store previous camera state so we can restore later
+local prevCameraType = camera.CameraType
+local prevCameraSubject = camera.CameraSubject
+
+-- force scriptable and update camera every frame to look from below vg -> vg is the part that follows your torso
+camera.CameraType = Enum.CameraType.Scriptable
+
+local camConn
+camConn = RunService.RenderStepped:Connect(function()
+    -- ensure vg exists and we have a torso
+    local torso = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Torso") or game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+    if not torso or not vg or not camAnchor then return end
+
+    -- position the anchor below the character (adjust Y offset as desired)
+    camAnchor.CFrame = torso.CFrame * CFrame.new(0, -100, 0) -- camera origin below the player
+    -- aim camera at the vg/torso (you can switch vg => torso if you want exact focus)
+    camera.CFrame = CFrame.new(camAnchor.Position, torso.Position)
+end)
+-- === Camera override active ===
+
+
 c.CameraSubject = vg
 c.CFrame = CFrame.new(vg.Position + Vector3.new(0, -100, 0), vg.Position)
 task.wait(.2)
@@ -1477,12 +1506,17 @@ end
 task.wait()
 end
 end)
--- ✅ Restore camera control after Ballistic Missile
+-- === Restore camera after Ballistic Missile ===
 pcall(function()
-    local c = workspace.CurrentCamera
-    c.CameraType = Enum.CameraType.Custom
-    c.CameraSubject = game.Players.LocalPlayer.Character
+    if camConn and camConn.Connected then camConn:Disconnect() end
 end)
+pcall(function() if camAnchor and camAnchor.Parent then camAnchor:Destroy() end end)
+pcall(function()
+    local camera = workspace.CurrentCamera
+    camera.CameraType = prevCameraType or Enum.CameraType.Custom
+    camera.CameraSubject = prevCameraSubject or game.Players.LocalPlayer.Character
+end)
+-- === Camera restored ===
 
 spawn(function()
 task.wait(.3)
