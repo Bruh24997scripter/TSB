@@ -1343,14 +1343,28 @@ cam.CameraType = Enum.CameraType.Scriptable
 
 -- make camera hover far below the Player (adjust -100 for distance)
 spawn(function()
+    local camSpeed = 0.1 -- lower = slower/smoother, higher = snappier
     while not womp do
         local char = game.Players.LocalPlayer.Character
         if not char or not char:FindFirstChild("HumanoidRootPart") then break end
         local root = char.HumanoidRootPart
-        cam.CFrame = CFrame.new(root.Position + Vector3.new(0, -12, 0), root.Position)
+
+        -- player's facing direction
+        local lookVector = root.CFrame.LookVector
+
+        -- cinematic offset: behind, to the right, and slightly below
+        local targetOffset = -lookVector * 20 + Vector3.new(10, -20, 0)
+        local targetPos = root.Position + targetOffset
+
+        -- smooth transition
+        cam.CFrame = cam.CFrame:Lerp(
+            CFrame.new(targetPos, root.Position), 
+            camSpeed
+        )
+
         task.wait()
     end
-    -- restore camera when it ends
+
     cam.CameraType = prevType
     cam.CameraSubject = prevSubj
 end)
