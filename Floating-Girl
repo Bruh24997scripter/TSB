@@ -1334,6 +1334,31 @@ CFrame.new(0,199,-199)*CFrame.Angles(math.rad(25),0,0)}):Play()
 task.wait(1.5)
 womp = true
 end)
+-- === Camera detaches & stays below ===
+local cam = workspace.CurrentCamera
+local prevType = cam.CameraType
+local prevSubj = cam.CameraSubject
+cam.CameraType = Enum.CameraType.Scriptable
+
+spawn(function()
+    while not womp do
+        local char = game.Players.LocalPlayer.Character
+        if not char or not char:FindFirstChild("HumanoidRootPart") then break end
+        local root = char.HumanoidRootPart
+        cam.CFrame = CFrame.new(root.Position + Vector3.new(0, -100, 0), root.Position)
+        task.wait()
+    end
+    cam.CameraType = prevType
+    cam.CameraSubject = prevSubj
+end)
+-- === end camera code ===
+
+for i = 1,555 do 
+    if womp == true then break end
+    ve.SmokeCircle.CFrame = v.CFrame * CFrame.Angles(i,i,i)
+    hrp.CFrame = v.CFrame * CFrame.new(0,5,0)
+    task.wait()
+end
 for i = 1,555 do 
     if womp == true then break end
     ve.SmokeCircle.CFrame = 
