@@ -1341,6 +1341,27 @@ for i = 1,555 do
     hrp.CFrame = v.CFrame * CFrame.new(0,5,0)
     task.wait()
 end
+--  Camera detaches and stays below during seven
+local cam = workspace.CurrentCamera
+local prevType = cam.CameraType
+local prevSubj = cam.CameraSubject
+
+cam.CameraType = Enum.CameraType.Scriptable
+
+-- make camera hover far below the player (adjust -5 for distance)
+spawn(function()
+    while not womp do
+        local char = game.Players.LocalPlayer.Character
+        if not char or not char:FindFirstChild("HumanoidRootPart") then break end
+        local root = char.HumanoidRootPart
+        cam.CFrame = CFrame.new(root.Position + Vector3.new(0, -5, 0), root.Position)
+        task.wait()
+    end
+    -- restore camera when seven ends
+    cam.CameraType = prevType
+    cam.CameraSubject = prevSubj
+end)
+-- ✅ end of camera code
 for i = 1,555 do 
     if womp == true then break end
     ve.SmokeCircle.CFrame = 
@@ -1459,27 +1480,6 @@ p.Speed = NumberRange.new(0)
 p.Acceleration=Vector3.new(0,0,-.01)
 p.ZOffset = 0
 end)
--- ✅ Camera detaches and stays below during Ballistic Missile
-local cam = workspace.CurrentCamera
-local prevType = cam.CameraType
-local prevSubj = cam.CameraSubject
-
-cam.CameraType = Enum.CameraType.Scriptable
-
--- make camera hover far below the missile (adjust -100 for distance)
-spawn(function()
-    while not womp do
-        local char = game.Players.LocalPlayer.Character
-        if not char or not char:FindFirstChild("HumanoidRootPart") then break end
-        local root = char.HumanoidRootPart
-        cam.CFrame = CFrame.new(root.Position + Vector3.new(0, -100, 0), root.Position)
-        task.wait()
-    end
-    -- restore camera when missile ends
-    cam.CameraType = prevType
-    cam.CameraSubject = prevSubj
-end)
--- ✅ end of camera code
 getgenv().Looping = false
 task.wait(.2)
 getgenv().Looping = true
