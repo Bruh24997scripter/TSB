@@ -1334,12 +1334,11 @@ CFrame.new(0,199,-199)*CFrame.Angles(math.rad(25),0,0)}):Play()
 -- === Ballistic Missile cinematic camera ===
 local cam = workspace.CurrentCamera
 local prevType, prevSubj = cam.CameraType, cam.CameraSubject
-local running = true
+local runningSix = true
 
 cam.CameraType = Enum.CameraType.Scriptable
-
 task.spawn(function()
-    while running do
+    while runningSix do
         local char = game.Players.LocalPlayer.Character
         local root = char and char:FindFirstChild("HumanoidRootPart")
         if not root then break end
@@ -1353,16 +1352,16 @@ end)
 task.wait(1.5)
 womp = true
 end)
--- ✅ Camera detaches and hovers above during Seven
+-- === Seven cinematic camera ===
 local cam = workspace.CurrentCamera
-local prevType = cam.CameraType
-local prevSubj = cam.CameraSubject
+local prevType, prevSubj = cam.CameraType, cam.CameraSubject
+local runningSeven = true
 
 cam.CameraType = Enum.CameraType.Scriptable
 
-spawn(function()
+task.spawn(function()
     local camSpeed = 0.1 -- smoothness (0.05 = slow cinematic, 0.2 = snappy)
-    while not womp do
+    while runningSeven do
         local char = game.Players.LocalPlayer.Character
         if not char or not char:FindFirstChild("HumanoidRootPart") then break end
         local root = char.HumanoidRootPart
@@ -1375,21 +1374,22 @@ spawn(function()
         local targetPos = root.Position + targetOffset
 
         -- look slightly downward toward player (adds cinematic tilt)
-        local lookAtPos = root.Position + Vector3.new(0, 5, 0) -- aims a bit above root to center character
+        local lookAtPos = root.Position + Vector3.new(0, 5, 0)
 
         -- smooth camera transition
         cam.CFrame = cam.CFrame:Lerp(
-            CFrame.new(targetPos, lookAtPos) * CFrame.Angles(math.rad(-10), 0, 0), -- tilt down 10 degrees
+            CFrame.new(targetPos, lookAtPos) * CFrame.Angles(math.rad(-10), 0, 0),
             camSpeed
         )
 
         task.wait()
     end
 
+    -- restore camera
     cam.CameraType = prevType
     cam.CameraSubject = prevSubj
 end)
--- ✅ end of camera code
+-- === end Seven camera code ===
 for i = 1,555 do 
     if womp == true then break end
     ve.SmokeCircle.CFrame = v.CFrame * CFrame.Angles(i,i,i)
@@ -1412,6 +1412,8 @@ v:Destroy()
 ve.SmokeCircle.ParticleEmitter.Rate = 0
 task.wait(1)
 ve:Destroy()
+runningSix = false
+runningSeven = false
 end)
 end)
 end
