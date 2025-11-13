@@ -1227,7 +1227,7 @@ spawn(function()  -- run camera in its own thread
 
 	cam.CameraType = Enum.CameraType.Scriptable
 	cam.CameraSubject = nil
-
+    print("Camera loop started")
 	task.spawn(function()
 		while runningSix do
 			local char = game.Players.LocalPlayer.Character
