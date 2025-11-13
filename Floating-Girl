@@ -1334,31 +1334,33 @@ CFrame.new(0,199,-199)*CFrame.Angles(math.rad(25),0,0)}):Play()
 task.wait(1.5)
 womp = true
 end)
--- ✅ Camera detaches and stays below during Seven
+-- ✅ Camera detaches and hovers above during Seven
 local cam = workspace.CurrentCamera
 local prevType = cam.CameraType
 local prevSubj = cam.CameraSubject
 
 cam.CameraType = Enum.CameraType.Scriptable
 
--- make camera hover far below the Player (adjust -100 for distance)
 spawn(function()
-    local camSpeed = 0.1 -- lower = slower/smoother, higher = snappier
+    local camSpeed = 0.1 -- smoothness (0.05 = slow cinematic, 0.2 = snappy)
     while not womp do
         local char = game.Players.LocalPlayer.Character
         if not char or not char:FindFirstChild("HumanoidRootPart") then break end
         local root = char.HumanoidRootPart
 
-        -- player's facing direction
+        -- player direction
         local lookVector = root.CFrame.LookVector
 
-        -- cinematic offset: behind, to the right, and slightly below
-        local targetOffset = -lookVector * 20 + Vector3.new(10, -20, 0)
+        -- cinematic offset: behind, to the right, and above
+        local targetOffset = -lookVector * 20 + Vector3.new(10, 20, 0)
         local targetPos = root.Position + targetOffset
 
-        -- smooth transition
+        -- look slightly downward toward player (adds cinematic tilt)
+        local lookAtPos = root.Position + Vector3.new(0, 5, 0) -- aims a bit above root to center character
+
+        -- smooth camera transition
         cam.CFrame = cam.CFrame:Lerp(
-            CFrame.new(targetPos, root.Position), 
+            CFrame.new(targetPos, lookAtPos) * CFrame.Angles(math.rad(-10), 0, 0), -- tilt down 10 degrees
             camSpeed
         )
 
