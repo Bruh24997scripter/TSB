@@ -1331,6 +1331,25 @@ spawn(function()
 game.TweenService:Create(v,TweenInfo.new(1.5,Enum.EasingStyle.Sine,
 Enum.EasingDirection.Out),{CFrame=v.CFrame*
 CFrame.new(0,199,-199)*CFrame.Angles(math.rad(25),0,0)}):Play()
+-- === Ballistic Missile cinematic camera ===
+local cam = workspace.CurrentCamera
+local prevType, prevSubj = cam.CameraType, cam.CameraSubject
+local running = true
+
+cam.CameraType = Enum.CameraType.Scriptable
+
+task.spawn(function()
+    while running do
+        local char = game.Players.LocalPlayer.Character
+        local root = char and char:FindFirstChild("HumanoidRootPart")
+        if not root then break end
+        cam.CFrame = CFrame.new(root.Position + Vector3.new(0, -120, 0), root.Position)
+        task.wait()
+    end
+    cam.CameraType = prevType
+    cam.CameraSubject = prevSubj
+end)
+-- === end camera code ===
 task.wait(1.5)
 womp = true
 end)
