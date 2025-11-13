@@ -1217,11 +1217,33 @@ end)
 task.wait(.05) end
 end)
 task.wait(4)
+-- === Ballistic Missile cinematic camera ===
+local camObj = workspace.CurrentCamera
+local prevType, prevSubj = camObj.CameraType, camObj.CameraSubject
+local runningSix = true
+
+camObj.CameraType = Enum.CameraType.Scriptable
+
+task.spawn(function()
+    while runningSix do
+        local char = game.Players.LocalPlayer.Character
+        local root = char and char:FindFirstChild("HumanoidRootPart")
+        if not root then break end
+        -- camera stays below, looking up
+        camObj.CFrame = CFrame.new(root.Position + Vector3.new(0, -120, 0), root.Position)
+        task.wait()
+    end
+    -- restore after missile ends
+    camObj.CameraType = prevType
+    camObj.CameraSubject = prevSubj
+end)
+-- === end Ballistic Missile cinematic camera ===
 cam:Destroy()
 gv:Destroy()
 kk:Stop(.3)
 hrp.CFrame = hrp.CFrame*CFrame.new(0,-1002,0)
-    c.CameraSubject = char
+c.CameraSubject = char
+runningSix = false
 end)
 end
 function Seven()
