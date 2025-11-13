@@ -286,6 +286,17 @@ task.wait()
 char.Humanoid.HipHeight = 0
 task.wait() end
 end)
+-- 🧩 Setup globals and references
+local lp = game.Players.LocalPlayer
+local char = lp.Character or lp.CharacterAdded:Wait()
+local hrp = char:WaitForChild("HumanoidRootPart")
+local uis = game:GetService("UserInputService")
+
+-- ✅ Cooldown template reference (fix for nil Clone)
+local cdcc = game:GetService("ReplicatedStorage"):WaitForChild("CooldownClone")
+
+-- ✅ Camera safety (always ensure CurrentCamera exists)
+workspace:WaitForChild("CurrentCamera")
 getgenv().Idle = char.Humanoid.AnimationPlayed:Connect(function(v)
 if v.Animation.AnimationId == "rbxassetid://14516273501" then
 local Anim = Instance.new("Animation")
