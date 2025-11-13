@@ -1217,35 +1217,40 @@ end)
 task.wait(.05) end
 end)
 task.wait(4)
+
 -- === Ballistic Missile cinematic camera (locked) ===
-task.wait(1) -- wait until launch actually happens
-local cam = workspace:WaitForChild("CurrentCamera")
-local prevType, prevSubj = cam.CameraType, cam.CameraSubject
-local runningSix = true
+spawn(function()  -- run camera in its own thread
+	task.wait(1) -- small delay so launch happens first
+	local cam = workspace:WaitForChild("CurrentCamera")
+	local prevType, prevSubj = cam.CameraType, cam.CameraSubject
+	local runningSix = true
 
--- Force override camera control
-cam.CameraType = Enum.CameraType.Scriptable
-cam.CameraSubject = nil
+	cam.CameraType = Enum.CameraType.Scriptable
+	cam.CameraSubject = nil
 
-task.spawn(function()
-	while runningSix do
-		local char = game.Players.LocalPlayer.Character
-		local root = char and char:FindFirstChild("HumanoidRootPart")
-		if not root then break end
+	task.spawn(function()
+		while runningSix do
+			local char = game.Players.LocalPlayer.Character
+			local root = char and char:FindFirstChild("HumanoidRootPart")
+			if not root then break end
 
-		-- lock camera below player, looking upward
-		cam.CFrame = CFrame.new(root.Position + Vector3.new(0, -180, 0), root.Position)
+			-- lock camera below player, looking upward
+			cam.CFrame = CFrame.new(root.Position + Vector3.new(0, -180, 0), root.Position)
+			task.wait()
+		end
 
-		task.wait()
-	end
+		-- restore normal view
+		cam.CameraType = prevType
+		cam.CameraSubject = prevSubj
+	end)
 
-	-- restore normal view
-	cam.CameraType = prevType
-	cam.CameraSubject = prevSubj
+	-- keep camera locked for the length of the move
+	task.wait(3.5)  -- adjust duration of the cinematic
+	runningSix = false
 end)
 -- === end Ballistic Missile camera ===
-runningSix = false
-cam:Destroy()
+
+-- continue with the normal cleanup
 gv:Destroy()
 kk:Stop(.3)
 hrp.CFrame = hrp.CFrame*CFrame.new(0,-1002,0)
